@@ -1,13 +1,8 @@
 package main
 
-import (
-	"github.com/Slyppa/Pokedex/internal/Pokeapi"
-)
-
 func main() {
-	/*cfg := &config{
+	cfg := &config{
 		commands: getCommands(),
 	}
-	startRepl(cfg)*/
-	Pokeapi.Locations(1)
+	startRepl(cfg)
 }
