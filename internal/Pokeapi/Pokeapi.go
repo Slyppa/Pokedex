@@ -2,15 +2,18 @@ package Pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 	"net/http"
-	"net/url"
-	"strconv"
+	"time"
 )
 
-type ResourceList struct {
+const (
+	baseURL = "https://pokeapi.co/api/v2"
+)
+
+type RespShallowLocations struct {
 	Count    int     `json:"count"`
-	Next     string  `json:"next"`
+	Next     *string `json:"next"`
 	Previous *string `json:"previous"`
 	Results  []struct {
 		Name string `json:"name"`
@@ -18,37 +21,47 @@ type ResourceList struct {
 	} `json:"results"`
 }
 
-func Locations(page int) {
-	offset := int((page - 1) * 20)
+// Client -
+type Client struct {
+	httpClient http.Client
+}
 
-	basePath := "https://pokeapi.co/api/v2/location-area"
-	u, err := url.Parse(basePath)
-	if err != nil {
-		fmt.Println("Error parsing base URL:", err)
-		return
+// NewClient -
+func NewClient(timeout time.Duration) Client {
+	return Client{
+		httpClient: http.Client{
+			Timeout: timeout,
+		},
+	}
+}
+
+func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
+	url := baseURL + "/location-area"
+	if pageURL != nil {
+		url = *pageURL
 	}
 
-	q := u.Query()
-	q.Set("limit", "20")
-	q.Set("offset", strconv.Itoa(offset))
-	u.RawQuery = q.Encode()
-	fmt.Println("Requesting URL:", u.String())
-
-	resp, err := http.Get(u.String())
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println("Network Error:", err)
-		return
+		return RespShallowLocations{}, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return RespShallowLocations{}, err
 	}
 	defer resp.Body.Close()
 
-	var data ResourceList
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		fmt.Println("JSON decode error:", err)
-		return
+	dat, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return RespShallowLocations{}, err
 	}
 
-	fmt.Println("\n--- Location Areas (Page 1) ---")
-	for i, area := range data.Results {
-		fmt.Printf("%2d. %s\n", i+1+offset, area.Name)
+	locationsResp := RespShallowLocations{}
+	err = json.Unmarshal(dat, &locationsResp)
+	if err != nil {
+		return RespShallowLocations{}, err
 	}
+
+	return locationsResp, nil
 }
