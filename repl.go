@@ -6,12 +6,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Slyppa/Pokedex/internal/Pokeapi"
+	"github.com/Slyppa/Pokedex/internal/pokeapi"
 )
 
 type config struct {
 	commands         map[string]cliCommand
-	pokeapiClient    Pokeapi.Client
+	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
 }

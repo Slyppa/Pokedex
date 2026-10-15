@@ -3,11 +3,11 @@ package main
 import (
 	"time"
 
-	"github.com/Slyppa/Pokedex/internal/Pokeapi"
+	"github.com/Slyppa/Pokedex/internal/pokeapi"
 )
 
 func main() {
-	pokeClient := Pokeapi.NewClient(5 * time.Second)
+	pokeClient := pokeapi.NewClient(5*time.Second, time.Minute*5)
 	cfg := &config{
 		commands:      getCommands(),
 		pokeapiClient: pokeClient,
