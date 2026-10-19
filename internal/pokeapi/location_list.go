@@ -6,16 +6,6 @@ import (
 	"net/http"
 )
 
-type RespShallowLocations struct {
-	Count    int     `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
-
 func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
