@@ -14,6 +14,7 @@ type config struct {
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
+	pageLocation     int
 }
 
 type cliCommand struct {
@@ -46,7 +47,7 @@ func getCommands() map[string]cliCommand {
 		},
 		"explore": {
 			name:        "explore <location_name>",
-			description: "Explore a location",
+			description: "Explore a location (name/id)",
 			callback:    commandExplore,
 		},
 	}
@@ -70,7 +71,7 @@ func startRepl(cfg *config) {
 
 		command, exists := cfg.commands[commandName]
 		if exists {
-			err := command.callback(cfg, args)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}

@@ -14,8 +14,11 @@ func commandMap(cfg *config, args ...string) error {
 	cfg.nextLocationsURL = locationsResp.Next
 	cfg.prevLocationsURL = locationsResp.Previous
 
-	for _, loc := range locationsResp.Results {
-		fmt.Println(loc.Name)
+	cfg.pageLocation += 1
+	offset := (cfg.pageLocation - 1) * 20
+	fmt.Printf("You are on page: %d\n", cfg.pageLocation)
+	for i, loc := range locationsResp.Results {
+		fmt.Printf("%d - %s\n", i+1+(offset), loc.Name)
 	}
 	return nil
 }
@@ -33,8 +36,11 @@ func commandMapb(cfg *config, args ...string) error {
 	cfg.nextLocationsURL = locationResp.Next
 	cfg.prevLocationsURL = locationResp.Previous
 
-	for _, loc := range locationResp.Results {
-		fmt.Println(loc.Name)
+	cfg.pageLocation -= 1
+	offset := (cfg.pageLocation - 1) * 20
+	fmt.Printf("You are on page: %d\n", cfg.pageLocation)
+	for i, loc := range locationResp.Results {
+		fmt.Printf("%d - %s\n", i+1+(offset), loc.Name)
 	}
 	return nil
 }
