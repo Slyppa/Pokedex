@@ -15,6 +15,7 @@ type config struct {
 	nextLocationsURL *string
 	prevLocationsURL *string
 	pageLocation     int
+	caughtPokemon    map[string]pokeapi.Pokemon
 }
 
 type cliCommand struct {
@@ -30,10 +31,15 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a help message",
 			callback:    commandHelp,
 		},
-		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
+		"catch": {
+			name:        "catch <pokemon_name>",
+			description: "Attempt to catch a pokemon",
+			callback:    commandCatch,
+		},
+		"explore": {
+			name:        "explore <location_name>",
+			description: "Explore a location (name/id)",
+			callback:    commandExplore,
 		},
 		"map": {
 			name:        "map",
@@ -45,10 +51,10 @@ func getCommands() map[string]cliCommand {
 			description: "Get the previous page of locations",
 			callback:    commandMapb,
 		},
-		"explore": {
-			name:        "explore <location_name>",
-			description: "Explore a location (name/id)",
-			callback:    commandExplore,
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
 		},
 	}
 }
